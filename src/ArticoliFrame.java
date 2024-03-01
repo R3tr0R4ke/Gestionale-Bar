@@ -1,15 +1,22 @@
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.util.Locale.Category;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
+import java.awt.GridLayout;
 
 public class ArticoliFrame extends JFrame {
 	private static ArticoliFrame istance; //Dichiarazione della variabile di classe
@@ -46,27 +53,6 @@ public class ArticoliFrame extends JFrame {
 		
 		String[] columnNames = {"ID_Articolo", "Nome", "Giacenza", "Prezzo Acquisto", "Prezzo Unitario", "Categoria"};
 		Object[][] data = {
-				{"001", "Articolo 1", 10, 50.0, 5.0, "Categoria 1"},
-	            {"002", "Articolo 2", 20, 60.0, 4.0, "Categoria 2"},
-	            {"001", "Articolo 1", 10, 50.0, 5.0, "Categoria 1"},
-	            {"002", "Articolo 2", 20, 60.0, 4.0, "Categoria 2"},
-	            {"001", "Articolo 1", 10, 50.0, 5.0, "Categoria 1"},
-	            {"002", "Articolo 2", 20, 60.0, 4.0, "Categoria 2"},
-	            {"001", "Articolo 1", 10, 50.0, 5.0, "Categoria 1"},
-	            {"002", "Articolo 2", 20, 60.0, 4.0, "Categoria 2"},
-	            {"001", "Articolo 1", 10, 50.0, 5.0, "Categoria 1"},
-	            {"002", "Articolo 2", 20, 60.0, 4.0, "Categoria 2"},
-	            {"001", "Articolo 1", 10, 50.0, 5.0, "Categoria 1"},
-	            {"002", "Articolo 2", 20, 60.0, 4.0, "Categoria 2"},
-	            {"002", "Articolo 2", 20, 60.0, 4.0, "Categoria 2"},
-	            {"001", "Articolo 1", 10, 50.0, 5.0, "Categoria 1"},
-	            {"002", "Articolo 2", 20, 60.0, 4.0, "Categoria 2"},
-	            {"001", "Articolo 1", 10, 50.0, 5.0, "Categoria 1"},
-	            {"002", "Articolo 2", 20, 60.0, 4.0, "Categoria 2"},
-	            {"001", "Articolo 1", 10, 50.0, 5.0, "Categoria 1"},
-	            {"002", "Articolo 2", 20, 60.0, 4.0, "Categoria 2"},
-	            {"001", "Articolo 1", 10, 50.0, 5.0, "Categoria 1"},
-	            {"002", "Articolo 2", 20, 60.0, 4.0, "Categoria 2"},
 	            //TODO: Aggiungere articoli tramite query al db
 		};
 		DefaultTableModel model = new DefaultTableModel(data, columnNames);
@@ -78,7 +64,7 @@ public class ArticoliFrame extends JFrame {
 		
 		txtInserisciNomeArt = new JTextField();
 		txtInserisciNomeArt.setText("inserisci nome o id...");
-		txtInserisciNomeArt.setBounds(10, 19, 159, 20);
+		txtInserisciNomeArt.setBounds(10, 11, 159, 28);
 		contentPane.add(txtInserisciNomeArt);
 		txtInserisciNomeArt.setColumns(10);
 		
@@ -97,6 +83,64 @@ public class ArticoliFrame extends JFrame {
 		contentPane.add(btnBackToMenu);
 		
 		btnAddArt = new JButton("Aggiungi Articolo");
+		btnAddArt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Codice per gestire il click del bottone "Aggiungi Articolo"
+		        // Mostra un form per l'aggiunta dell'articolo
+		        JTextField nomeField = new JTextField(20);
+		        JTextField giacenzaField = new JTextField(5);
+		        JTextField prezzoAcquistoField = new JTextField(10);
+		        JTextField prezzoVenditaField = new JTextField(10);
+		        
+		        String[] categorie = {"BIRRA", "GIN", "TONICA", "SPRITZ", "PROSECCO", "VERMOUTH", "RUM", "WHISKEY", "AMARI", "ALTRO", "VINO", "NONSOLOCARTA", "FOOD"};
+		        JComboBox<String> categoriaComboBox = new JComboBox<>(categorie);
+		        
+		        JPanel panel = new JPanel(new GridLayout(0, 1));
+		        panel.add(new JLabel("Nome Articolo:"));
+		        panel.add(nomeField);
+		        panel.add(new JLabel("Giacenza:"));
+		        panel.add(giacenzaField);
+		        panel.add(new JLabel("Prezzo Acquisto:"));
+		        panel.add(prezzoAcquistoField);
+		        panel.add(new JLabel("Prezzo Vendita:"));
+		        panel.add(prezzoVenditaField);
+		        panel.add(new JLabel("Categoria:"));
+		        panel.add(categoriaComboBox);
+		        
+		        int result = JOptionPane.showConfirmDialog(null, panel, "Inserisci i dettagli dell'articolo",
+		                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		        
+		        if (result == JOptionPane.OK_OPTION) {
+		            // Raccogli i dettagli inseriti dall'utente
+		            String nome = nomeField.getText();
+		            int giacenza = Integer.parseInt(giacenzaField.getText());
+		            BigDecimal prezzoAcquisto = new BigDecimal(prezzoAcquistoField.getText());
+		            BigDecimal prezzoVendita = new BigDecimal(prezzoVenditaField.getText());
+		            String categoria = (String) categoriaComboBox.getSelectedItem();
+		            
+		            // Creazione dell'oggetto Articolo con i dettagli inseriti dall'utente
+		            Articolo nuovoArticolo;
+		            
+		            nuovoArticolo.setCategoria();
+		            
+		            // Aggiunta dell'articolo al database
+		            aggiungiArticoloAlDatabase(nuovoArticolo);
+		         
+		         // Aggiorna la tabella degli articoli nell'interfaccia grafica
+		            aggiornaTabellaArticoli();
+		        }
+			}
+
+			private void aggiungiArticoloAlDatabase(Articolo nuovoArticolo) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			private void aggiornaTabellaArticoli() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		btnAddArt.setBounds(10, 292, 159, 53);
 		contentPane.add(btnAddArt);
 		

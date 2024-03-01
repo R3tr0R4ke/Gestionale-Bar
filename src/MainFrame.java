@@ -14,6 +14,9 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.UIManager;
 
@@ -44,7 +47,7 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
-		setTitle("Menu Principale");
+		setTitle("Menu principale");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -61,6 +64,32 @@ public class MainFrame extends JFrame {
 		menuArtButton = new JButton("Menu Articoli");
 		menuArtButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Codice per la connessione al database
+		        Connection connection = null;
+		        try {
+		        	// Connessione al database MySQL
+		            String url = "jdbc:mysql://localhost:3306/nomedeldatabase";
+		            String username = "username";
+		            String password = "password";
+		            
+		            connection = DriverManager.getConnection(url, username, password);
+		            System.out.println("Connessione al database MySQL riuscita!");
+		            // Ora puoi eseguire le query o altre operazioni sul database utilizzando questa connessione
+		        }
+		        catch (SQLException ex) {
+		        	System.err.println("Errore durante la connessione al database: " + ex.getMessage());
+				}
+		        finally {
+					try {
+						if(connection != null) {
+							connection.close(); // Assicurati di chiudere la connessione quando non è più necessaria
+						}
+					}
+					catch (SQLException ex) {
+						System.err.println("Errore durante la connessione al database: " + ex.getMessage());
+					}
+				}
+				
 				ArticoliFrame articoliFrame = ArticoliFrame.getIstance();	//Ottiene l'istanza del frame
 				articoliFrame.showFrame();	//Mostra il menu articoli
 			}
