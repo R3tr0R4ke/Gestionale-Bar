@@ -92,7 +92,7 @@ public class ArticoliFrame extends JFrame {
 		        JTextField prezzoAcquistoField = new JTextField(10);
 		        JTextField prezzoVenditaField = new JTextField(10);
 		        
-		        String[] categorie = {"BIRRA", "GIN", "TONICA", "SPRITZ", "PROSECCO", "VERMOUTH", "RUM", "WHISKEY", "AMARI", "ALTRO", "VINO", "NONSOLOCARTA", "FOOD"};
+		        String[] categorie = {"BIRRA", "GIN", "TONICA", "SPRITZ", "PROSECCO", "VERMOUTH", "RUM", "WHISKEY", "AMARI", "ALTRO", "VINO", "NONSOLOCARTA", "FOOD", "SINISI"};
 		        JComboBox<String> categoriaComboBox = new JComboBox<>(categorie);
 		        
 		        JPanel panel = new JPanel(new GridLayout(0, 1));
@@ -116,31 +116,26 @@ public class ArticoliFrame extends JFrame {
 		            int giacenza = Integer.parseInt(giacenzaField.getText());
 		            BigDecimal prezzoAcquisto = new BigDecimal(prezzoAcquistoField.getText());
 		            BigDecimal prezzoVendita = new BigDecimal(prezzoVenditaField.getText());
-		            String categoria = (String) categoriaComboBox.getSelectedItem();
-		            
+		            String categoriaString = (String) categoriaComboBox.getSelectedItem();	//Estraggo la stringa per la categoria		       
+		            Categoria categoria = Categoria.valueOf(categoriaString);	//Assegno alla variabile enum la stringa estratta
+		            		           		        
 		            // Creazione dell'oggetto Articolo con i dettagli inseriti dall'utente
-		            Articolo nuovoArticolo;
-		            
-		            nuovoArticolo.setCategoria();
-		            
+		            Articolo nuovoArticolo = new Articolo(nome, giacenza, prezzoAcquisto, prezzoVendita, categoria);
+		            		
+		            Articoli tmpArticoli = new Articoli();
 		            // Aggiunta dell'articolo al database
-		            aggiungiArticoloAlDatabase(nuovoArticolo);
+		            tmpArticoli.aggiungiArticoloAlDatabase(nuovoArticolo);
 		         
-		         // Aggiorna la tabella degli articoli nell'interfaccia grafica
+		            // Aggiorna la tabella degli articoli nell'interfaccia grafica
 		            aggiornaTabellaArticoli();
 		        }
 			}
 
-			private void aggiungiArticoloAlDatabase(Articolo nuovoArticolo) {
-				// TODO Auto-generated method stub
-				
-			}
-
 			private void aggiornaTabellaArticoli() {
 				// TODO Auto-generated method stub
-				
 			}
 		});
+		
 		btnAddArt.setBounds(10, 292, 159, 53);
 		contentPane.add(btnAddArt);
 		

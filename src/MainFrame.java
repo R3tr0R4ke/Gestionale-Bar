@@ -68,9 +68,9 @@ public class MainFrame extends JFrame {
 		        Connection connection = null;
 		        try {
 		        	// Connessione al database MySQL
-		            String url = "jdbc:mysql://localhost:3306/nomedeldatabase";
-		            String username = "username";
-		            String password = "password";
+		        	String url = "jdbc:mysql://localhost:3306/gestionalebar";
+		        	String username = "root";
+		        	String password = "SESSOPAZZO39!";
 		            
 		            connection = DriverManager.getConnection(url, username, password);
 		            System.out.println("Connessione al database MySQL riuscita!");
@@ -94,27 +94,19 @@ public class MainFrame extends JFrame {
 				articoliFrame.showFrame();	//Mostra il menu articoli
 			}
 		});
-		menuArtButton.setBounds(15, 91, 152, 23);
+		menuArtButton.setBounds(15, 91, 152, 39);
 		
 		//Bottone che porta al menu della lista di fornitori
 		JButton menuFornitButton = new JButton("Fornitori");
-		menuFornitButton.setBounds(15, 125, 152, 23);
+		menuFornitButton.setBounds(267, 91, 152, 39);
 		menuFornitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
 		
-		//Bottone che porta al menu dei dipendenti
-		JButton menuDipendButton = new JButton("Dipendenti");
-		menuDipendButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		menuDipendButton.setBounds(15, 159, 152, 23);
-		
 		//Bottone che porta al menu Entrate/spese
 		JButton menuEntrSpesButton = new JButton("Entrate/Spese");
-		menuEntrSpesButton.setBounds(15, 193, 152, 23);
+		menuEntrSpesButton.setBounds(15, 141, 152, 39);
 		menuEntrSpesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -122,7 +114,7 @@ public class MainFrame extends JFrame {
 		
 		//Bottone menu ordini fornitori
 		JButton menuOrdFornButton = new JButton("Ordini Fornitori");
-		menuOrdFornButton.setBounds(15, 227, 152, 23);
+		menuOrdFornButton.setBounds(267, 141, 152, 39);
 		
 		//Termina applicazione
 		JButton btnNewButton = new JButton("Chiudi App");
@@ -134,19 +126,13 @@ public class MainFrame extends JFrame {
 		btnNewButton.setBounds(310, 227, 109, 23);
 		btnNewButton.setForeground(new Color(255, 255, 0));
 		btnNewButton.setBackground(new Color(255, 51, 0));
-		
-		//Menu ordini cliente (aggiorna giacenze dopo che vendi articoli)
-		JButton menuOrdClientButton = new JButton("Ordine Cliente");
-		menuOrdClientButton.setBounds(264, 91, 155, 23);
 		contentPane.setLayout(null);
 		contentPane.add(lblGestionaleBar);
 		contentPane.add(menuArtButton);
 		contentPane.add(menuFornitButton);
-		contentPane.add(menuDipendButton);
 		contentPane.add(menuEntrSpesButton);
 		contentPane.add(menuOrdFornButton);
 		contentPane.add(btnNewButton);
-		contentPane.add(menuOrdClientButton);
 		
 		JLabel lblNewLabel = new JLabel("Premi un bottone per navigare nel menu:");
 		lblNewLabel.setFont(new Font("Consolas", Font.PLAIN, 13));
