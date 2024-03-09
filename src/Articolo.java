@@ -16,7 +16,6 @@ public class Articolo {
 		if(giacenza < 0) {
 			throw new IllegalArgumentException("Giacenza non può essere < 0");
 		}
-		this.idArticolo = idArticolo;
 		this.nome = nome;
 		this.giacenza = giacenza;
 		this.categoria = categoria;

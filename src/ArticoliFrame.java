@@ -12,6 +12,7 @@ import javax.swing.JComboBox;
 
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.security.PublicKey;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -66,7 +67,10 @@ public class ArticoliFrame extends JFrame {
 		tmpArt.aggiornaTabellaArticoli(model);
 		
 		//SEZIONE CERCA ARTICOLO
-		keywordField = new JTextField();
+		keywordField = new JTextField("Inserisci nome o ID");
+		keywordField.setForeground(Color.GRAY);	//Imposta colore del testo su grigio
+		keywordField.addActionListener();
+		
 		keywordField.setBounds(10, 11, 159, 28);
 		contentPane.add(keywordField);
 		keywordField.setColumns(10);
