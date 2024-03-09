@@ -5,7 +5,6 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -13,7 +12,6 @@ import javax.swing.JComboBox;
 
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
-import java.util.Locale.Category;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -50,20 +48,26 @@ public class ArticoliFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		
-		String[] columnNames = {"ID_Articolo", "Nome", "Giacenza", "Prezzo Acquisto", "Prezzo Unitario", "Categoria"};
-		Object[][] data = {
-	            //TODO: Aggiungere articoli tramite query al db
-		};
-		DefaultTableModel model = new DefaultTableModel(data, columnNames);
+		//Creazione JTable con modello vuoto
+		DefaultTableModel model = new DefaultTableModel();
+		model.addColumn("ID_Articolo");
+		model.addColumn("Nome");
+		model.addColumn("Giacenza");
+		model.addColumn("Prezzo acquisto");
+		model.addColumn("Prezzo unitario");
+		model.addColumn("Categoria");
 		table = new JTable(model);	//Carica la tabella con i seguenti parametri
 		table.setBounds(10, 11, 414, 129);
 		JScrollPane scrollPane = new JScrollPane(table);	//Aggiungi un scroll pane alla tabella
 		scrollPane.setBounds(10, 50, 684, 219);
 		getContentPane().add(scrollPane);
 		
+		Articoli tmpArt = new Articoli();
+		tmpArt.aggiornaTabellaArticoli(model);
+		
+		//SEZIONE CERCA ARTICOLO
 		txtInserisciNomeArt = new JTextField();
-		txtInserisciNomeArt.setText("inserisci nome o id...");
+		txtInserisciNomeArt.setText("Inserisci nome o id...");
 		txtInserisciNomeArt.setBounds(10, 11, 159, 28);
 		contentPane.add(txtInserisciNomeArt);
 		txtInserisciNomeArt.setColumns(10);
@@ -73,16 +77,23 @@ public class ArticoliFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		btnSearchArt.setBounds(179, 18, 89, 23);
+		btnSearchArt.setBounds(176, 10, 89, 30);
 		contentPane.add(btnSearchArt);
 		
+		//SEZIONE TORNA INDIETRO
 		btnBackToMenu = new JButton("Indietro");
+		btnBackToMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();	//Chiude l'istanza di ArticoliFrame
+			}
+		});
 		btnBackToMenu.setForeground(new Color(255, 255, 0));
 		btnBackToMenu.setBackground(new Color(255, 51, 0));
 		btnBackToMenu.setBounds(567, 393, 127, 37);
 		contentPane.add(btnBackToMenu);
 		
-		btnAddArt = new JButton("Aggiungi Articolo");
+		//SEZIONE ADD ARTICOLO
+		btnAddArt = new JButton("Aggiungi Articolo");	
 		btnAddArt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Codice per gestire il click del bottone "Aggiungi Articolo"
@@ -127,21 +138,33 @@ public class ArticoliFrame extends JFrame {
 		            tmpArticoli.aggiungiArticoloAlDatabase(nuovoArticolo);
 		         
 		            // Aggiorna la tabella degli articoli nell'interfaccia grafica
-		            aggiornaTabellaArticoli();
+		            tmpArticoli.aggiornaTabellaArticoli(model);	//TODO: CREA BOTTONE AGGIORNA TABELLA
 		        }
 			}
-
-			private void aggiornaTabellaArticoli() {
-				// TODO Auto-generated method stub
-			}
 		});
-		
 		btnAddArt.setBounds(10, 292, 159, 53);
 		contentPane.add(btnAddArt);
 		
+		//SEZIONE RIMUOVI ARTICOLO
 		btnRmvArticolo = new JButton("Rimuovi Articolo");
+		btnRmvArticolo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tmpArt.rimuoviArticolo();
+				tmpArt.aggiornaTabellaArticoli(model);
+			}
+		});
 		btnRmvArticolo.setBounds(10, 377, 159, 53);
 		contentPane.add(btnRmvArticolo);
+		
+		//SEZIONE REFRESH TABELLA
+		JButton btnNewButton = new JButton("Refresh table");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tmpArt.aggiornaTabellaArticoli(model);	//Refresha la JTable
+			}
+		});
+		btnNewButton.setBounds(589, 14, 105, 28);
+		contentPane.add(btnNewButton);
 	}
 	
 	//Metodo per mostrare il frame degli articoli
