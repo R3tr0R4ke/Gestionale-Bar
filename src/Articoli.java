@@ -4,30 +4,20 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class Articoli extends Articolo{
-	private HashMap<String, Articolo> articoliMap;
 	private String url = "jdbc:mysql://localhost:3306/gestionalebar";
 	private String username = "root";
 	private String password = "root";
 	
 	public Articoli() {}
-	
-	public void addArticolo(Articolo articolo) {
-		articoliMap.put(getNome(), articolo);	//Articolo viene aggiunto nella mappa
-	}
-	
-	//Ritorna uan HashMap di articoli
-	public HashMap<String, Articolo> getArticoli(){
-		return articoliMap;
-	}
-	
+		
 	public void aggiungiArticoloAlDatabase(Articolo nuovoArticolo) {
 		String query = "INSERT INTO articoli (nome, giacenza, prezzoAcquisto, prezzoVendita, categoria) VALUES (?, ?, ?, ? ,?)";
 		
@@ -78,16 +68,20 @@ public class Articoli extends Articolo{
 	public void rimuoviArticolo() {
 		// Creazione di un dialog panel per l'inserimento del nome dell'articolo
         JTextField txtNomeArticolo = new JTextField(20);
+        JTextField txtIdArticolo = new JTextField(10);
         JPanel panel = new JPanel(new GridLayout(0, 1));
         panel.add(new JLabel("Nome dell'articolo:"));
         panel.add(txtNomeArticolo);
+        panel.add(new JLabel("ID dell'articolo:"));
+        panel.add(txtIdArticolo);
         
         int result = JOptionPane.showConfirmDialog(null, panel, "Inserisci il nome dell'articolo da rimuovere",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         
         if (result == JOptionPane.OK_OPTION) {
             String nomeArticolo = txtNomeArticolo.getText().trim();
-            if (!nomeArticolo.isEmpty()) {
+            String idArticoloString = txtIdArticolo.getText().trim();
+            if (!nomeArticolo.isEmpty() || !idArticoloString.isEmpty()) {
             	PreparedStatement stmt = null;
             	Connection conn = null;
             	
@@ -96,10 +90,18 @@ public class Articoli extends Articolo{
                     // Connessione al database
                     conn = DriverManager.getConnection(url, username, password);
 
-                    // Query di eliminazione per rimuovere l'articolo con il nome specificato
-                    String sql = "DELETE FROM Articoli WHERE Nome = ?";
-                    stmt = conn.prepareStatement(sql);
-                    stmt.setString(1, nomeArticolo);
+                    if (!idArticoloString.isEmpty()) {
+                        // Rimozione dall'ID se è stato inserito
+                        int idArticolo = Integer.parseInt(idArticoloString);
+                        String sql = "DELETE FROM Articoli WHERE ID_Articolo = ?";
+                        stmt = conn.prepareStatement(sql);
+                        stmt.setInt(1, idArticolo);
+                    } else {
+                        // Rimozione dal nome se è stato inserito
+                        String sql = "DELETE FROM Articoli WHERE Nome = ?";
+                        stmt = conn.prepareStatement(sql);
+                        stmt.setString(1, nomeArticolo);
+                    }
 
                     // Esecuzione della query di eliminazione
                     int rowsAffected = stmt.executeUpdate();
@@ -126,10 +128,51 @@ public class Articoli extends Articolo{
             	
             	
             } else {
-                JOptionPane.showMessageDialog(null, "Inserisci il nome dell'articolo.", "Errore", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Inserisci il nome o l'ID dell'articolo.", "Errore", JOptionPane.ERROR_MESSAGE);
             }
         }		     
     }
 	
 	//TODO: METODO RICERCA TRAMITE FILTRO
+	public void ricercaArticolo(String keyword, JTable table) {
+		String queryByID = "SELECT * FROM Articoli WHERE ID_Articolo = ?";
+		String queryByName = "SELECT * FROM Articoli WHERE Nome LIKE ?";
+		
+		try (Connection conn = DriverManager.getConnection(url, username, password);
+	             PreparedStatement pstmt = conn.prepareStatement(keyword.matches("\\d+") ? queryByID : queryByName)){
+			
+			if(keyword.matches("\\d+")) {
+				//Se il parametro keyword può essere convertito in un ID, cerc per ID
+				int id = Integer.parseInt(keyword);
+				pstmt.setInt(1, id);
+			}
+			else {
+	            // Altrimenti, cerca per nome
+	            pstmt.setString(1, "%" + keyword + "%");
+	        }
+			
+			//Esecuzione della query
+			try(ResultSet rs = pstmt.executeQuery()){
+				DefaultTableModel model = (DefaultTableModel) table.getModel();
+				model.setRowCount(0);	//Rimuove tutte le righe esistenti nella tabella
+				
+				while (rs.next()) {
+                    int id = rs.getInt("ID_Articolo");
+                    String nome = rs.getString("nome");
+                    int giacenza = rs.getInt("giacenza");
+                    // Aggiungi altre colonne se necessario
+                    double prezzoAcquisto = rs.getDouble("prezzoAcquisto");
+                    double prezzoVendita = rs.getDouble("prezzoVendita");
+                    String categoriaString = rs.getString("categoria");
+                    Categoria categoria = Categoria.valueOf(categoriaString);
+                    
+                    // Aggiungi riga alla tabella
+                    model.addRow(new Object[]{id, nome, giacenza, prezzoAcquisto, prezzoVendita, categoria});
+                }
+			}
+		}
+		catch (SQLException e) {
+            System.err.println("Errore durante la ricerca dell'articolo: " + e.getMessage());
+        }
+	}
 }
