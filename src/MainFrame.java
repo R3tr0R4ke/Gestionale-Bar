@@ -3,22 +3,16 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JToolBar;
 import javax.swing.JButton;
-import javax.swing.JTextField;
 import javax.swing.JLabel;
 import java.awt.Color;
 import javax.swing.SwingConstants;
 import java.awt.Font;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
-import javax.swing.UIManager;
 
 public class MainFrame extends JFrame {
 
@@ -70,7 +64,7 @@ public class MainFrame extends JFrame {
 		        	// Connessione al database MySQL
 		        	String url = "jdbc:mysql://localhost:3306/gestionalebar";
 		        	String username = "root";
-		        	String password = "SESSOPAZZO39!";
+		        	String password = "root";
 		            
 		            connection = DriverManager.getConnection(url, username, password);
 		            System.out.println("Connessione al database MySQL riuscita!");
