@@ -22,7 +22,7 @@ public class ArticoliFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTable table;
-	private JTextField txtInserisciNomeArt;
+	private JTextField keywordField;
 	private JButton btnBackToMenu;
 	private JButton btnAddArt;
 	private JButton btnRmvArticolo;
@@ -66,15 +66,16 @@ public class ArticoliFrame extends JFrame {
 		tmpArt.aggiornaTabellaArticoli(model);
 		
 		//SEZIONE CERCA ARTICOLO
-		txtInserisciNomeArt = new JTextField();
-		txtInserisciNomeArt.setText("Inserisci nome o id...");
-		txtInserisciNomeArt.setBounds(10, 11, 159, 28);
-		contentPane.add(txtInserisciNomeArt);
-		txtInserisciNomeArt.setColumns(10);
+		keywordField = new JTextField();
+		keywordField.setBounds(10, 11, 159, 28);
+		contentPane.add(keywordField);
+		keywordField.setColumns(10);
 		
 		JButton btnSearchArt = new JButton("Cerca");
 		btnSearchArt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String keyword = keywordField.getText();
+                tmpArt.ricercaArticolo(keyword, table);
 			}
 		});
 		btnSearchArt.setBounds(176, 10, 89, 30);
