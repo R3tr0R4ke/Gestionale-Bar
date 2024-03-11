@@ -11,8 +11,9 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.math.BigDecimal;
-import java.security.PublicKey;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -27,14 +28,13 @@ public class ArticoliFrame extends JFrame {
 	private JButton btnBackToMenu;
 	private JButton btnAddArt;
 	private JButton btnRmvArticolo;
-	
+	private Articoli tmpArticoli = new Articoli();
 
 	//Metodo statico per ottenere l'istanza unica del frame degli articoli
 	public static ArticoliFrame getIstance() {
 		if(istance == null) {
 			istance = new ArticoliFrame();
 		}
-		
 		return istance;
 	}
 
@@ -69,10 +69,29 @@ public class ArticoliFrame extends JFrame {
 		//SEZIONE CERCA ARTICOLO
 		keywordField = new JTextField("Inserisci nome o ID");
 		keywordField.setForeground(Color.GRAY);	//Imposta colore del testo su grigio
-		keywordField.addActionListener();
+		keywordField.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				// Quando il campo di testo perde il focus, controlla se non è stato inserito alcun testo
+				if(keywordField.getText().isEmpty()) {
+					keywordField.setText("Inserisci nome o ID");	//Ripristina il testo UI
+					keywordField.setForeground(Color.GRAY);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				if(keywordField.getText().equals("Inserisci nome o ID")) {
+					keywordField.setText(""); //Rimuove il testo
+					keywordField.setForeground(Color.BLACK);	//Imposta il colore del testo a nero
+				}
+			}
+		});
 		
+	
 		keywordField.setBounds(10, 11, 159, 28);
 		contentPane.add(keywordField);
+		
 		keywordField.setColumns(10);
 		
 		JButton btnSearchArt = new JButton("Cerca");
@@ -90,6 +109,10 @@ public class ArticoliFrame extends JFrame {
 		btnBackToMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();	//Chiude l'istanza di ArticoliFrame
+				
+				//Crea e visualizza il MainFrame
+				MainFrame newFrame = new MainFrame();
+				newFrame.setVisible(true);
 			}
 		});
 		btnBackToMenu.setForeground(new Color(255, 255, 0));
@@ -106,8 +129,7 @@ public class ArticoliFrame extends JFrame {
 		        JTextField nomeField = new JTextField(20);
 		        JTextField giacenzaField = new JTextField(5);
 		        JTextField prezzoAcquistoField = new JTextField(10);
-		        JTextField prezzoVenditaField = new JTextField(10);
-		        
+		        JTextField prezzoVenditaField = new JTextField(10);		        		  
 		        String[] categorie = {"BIRRA", "GIN", "TONICA", "SPRITZ", "PROSECCO", "VERMOUTH", "RUM", "WHISKEY", "AMARI", "ALTRO", "VINO", "NONSOLOCARTA", "FOOD", "SINISI"};
 		        JComboBox<String> categoriaComboBox = new JComboBox<>(categorie);
 		        
@@ -138,7 +160,6 @@ public class ArticoliFrame extends JFrame {
 		            // Creazione dell'oggetto Articolo con i dettagli inseriti dall'utente
 		            Articolo nuovoArticolo = new Articolo(nome, giacenza, prezzoAcquisto, prezzoVendita, categoria);
 		            		
-		            Articoli tmpArticoli = new Articoli();
 		            // Aggiunta dell'articolo al database
 		            tmpArticoli.aggiungiArticoloAlDatabase(nuovoArticolo);
 		         
@@ -158,7 +179,7 @@ public class ArticoliFrame extends JFrame {
 				tmpArt.aggiornaTabellaArticoli(model);
 			}
 		});
-		btnRmvArticolo.setBounds(10, 377, 159, 53);
+		btnRmvArticolo.setBounds(269, 292, 159, 53);
 		contentPane.add(btnRmvArticolo);
 		
 		//SEZIONE REFRESH TABELLA
@@ -170,6 +191,59 @@ public class ArticoliFrame extends JFrame {
 		});
 		btnNewButton.setBounds(589, 14, 105, 28);
 		contentPane.add(btnNewButton);
+		
+		JButton updateArtBtn = new JButton("Aggiorna Articolo");
+		updateArtBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Mostra un form per l'aggiornamento dell'articolo
+				JTextField idField = new JTextField(10);
+				JTextField nomeField = new JTextField(20);
+		        JTextField giacenzaField = new JTextField(5);
+		        JTextField prezzoAcquistoField = new JTextField(10);
+		        JTextField prezzoVenditaField = new JTextField(10);		        		  
+		        String[] categorie = {"BIRRA", "GIN", "TONICA", "SPRITZ", "PROSECCO", "VERMOUTH", "RUM", "WHISKEY", "AMARI", "ALTRO", "VINO", "NONSOLOCARTA", "FOOD", "SINISI"};
+		        JComboBox<String> categoriaComboBox = new JComboBox<>(categorie);
+		        
+		        JPanel panel = new JPanel(new GridLayout(0, 1));
+		        panel.add(new JLabel("ID"));
+		        panel.add(idField);
+		        panel.add(new JLabel("Nome Articolo:"));
+		        panel.add(nomeField);
+		        panel.add(new JLabel("Giacenza:"));
+		        panel.add(giacenzaField);
+		        panel.add(new JLabel("Prezzo Acquisto:"));
+		        panel.add(prezzoAcquistoField);
+		        panel.add(new JLabel("Prezzo Vendita:"));
+		        panel.add(prezzoVenditaField);
+		        panel.add(new JLabel("Categoria:"));
+		        panel.add(categoriaComboBox);
+		        
+		        int result = JOptionPane.showConfirmDialog(null, panel, "Inserisci i dettagli dell'articolo",
+		                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		        
+		        if (result == JOptionPane.OK_OPTION) {
+		            // Raccogli i dettagli inseriti dall'utente
+		            int idArticolo = Integer.parseInt(idField.getText());
+		        	String nome = nomeField.getText();
+		            int giacenza = Integer.parseInt(giacenzaField.getText());
+		            BigDecimal prezzoAcquisto = new BigDecimal(prezzoAcquistoField.getText());
+		            BigDecimal prezzoVendita = new BigDecimal(prezzoVenditaField.getText());
+		            String categoriaString = (String) categoriaComboBox.getSelectedItem();	//Estraggo la stringa per la categoria		       
+		            Categoria categoria = Categoria.valueOf(categoriaString);	//Assegno alla variabile enum la stringa estratta
+		            		           		        
+		            // Creazione dell'oggetto Articolo con i dettagli inseriti dall'utente
+		            Articolo nuovoArticolo = new Articolo(nome, giacenza, prezzoAcquisto, prezzoVendita, categoria);
+		            				          
+		            // Aggiornamento dell'articolo nel database
+		            tmpArt.updateArticolo(idArticolo, nuovoArticolo);
+		         
+		            // Aggiorna la tabella degli articoli nell'interfaccia grafica
+		            tmpArt.aggiornaTabellaArticoli(model);	//TODO: CREA BOTTONE AGGIORNA TABELLA
+		        }
+			}
+		});
+		updateArtBtn.setBounds(535, 292, 159, 53);
+		contentPane.add(updateArtBtn);
 	}
 	
 	//Metodo per mostrare il frame degli articoli
