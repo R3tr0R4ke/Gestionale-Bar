@@ -45,10 +45,6 @@ public class Articolo {
 	}
 	
 	//Getters:
-	/*public int getIdArticolo() {
-		return idArticolo;
-	}*/
-	
 	public String getNome() {
 		return nome;
 	}
@@ -101,6 +97,4 @@ public class Articolo {
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
-	
-	//TODO: AGIGUNGERE ALTRI METODI EVENTUALI, CONTENITORI, VISTE
 }

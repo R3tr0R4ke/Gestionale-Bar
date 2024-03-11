@@ -175,4 +175,29 @@ public class Articoli extends Articolo{
             System.err.println("Errore durante la ricerca dell'articolo: " + e.getMessage());
         }
 	}
+	
+	public void updateArticolo(int id, Articolo articolo) {
+		String query = "UPDATE Articoli SET Nome = ?, Giacenza = ?, PrezzoAcquisto = ?, PrezzoVendita = ?, Categoria = ? WHERE ID_Articolo = ?";
+		
+		try(Connection conn = DriverManager.getConnection(url, username, password);
+				PreparedStatement pstmt = conn.prepareStatement(query)){
+					
+			// Imposta i parametri per l'aggiornamento
+            pstmt.setString(1, articolo.getNome());
+            pstmt.setInt(2, articolo.getGiacenza());
+            pstmt.setBigDecimal(3, articolo.getPrezzoAcquisto());
+            pstmt.setBigDecimal(4, articolo.getPrezzoUnitario());
+            pstmt.setString(5, articolo.getCategoria().toString());
+            pstmt.setInt(6, id);
+            
+            pstmt.executeUpdate();
+		}
+		catch (SQLException e) {
+            System.err.println("Errore durante l'aggiornamento dell'articolo: " + e.getMessage());
+        }
+	}
+	
+	/*public void getArtDescription() {
+		int idArticolo = Integer.parseInt(id)
+	}*/
 }
