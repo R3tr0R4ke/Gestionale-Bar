@@ -58,19 +58,11 @@ public class MainFrame extends JFrame {
 				articoliFrame.showFrame();	//Mostra il menu articoli
 			}
 		});
-		menuArtButton.setBounds(15, 91, 152, 39);
-		
-		//Bottone che porta al menu della lista di fornitori
-		JButton menuFornitButton = new JButton("Fornitori");
-		menuFornitButton.setBounds(267, 91, 152, 39);
-		menuFornitButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		menuArtButton.setBounds(144, 85, 152, 39);
 		
 		//Bottone che porta al menu Entrate/spese
 		JButton menuEntrSpesButton = new JButton("Entrate/Spese");
-		menuEntrSpesButton.setBounds(15, 141, 152, 39);
+		menuEntrSpesButton.setBounds(144, 135, 152, 39);
 		menuEntrSpesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -78,7 +70,12 @@ public class MainFrame extends JFrame {
 		
 		//Bottone menu ordini fornitori
 		JButton menuOrdFornButton = new JButton("Ordini Fornitori");
-		menuOrdFornButton.setBounds(267, 141, 152, 39);
+		menuOrdFornButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		menuOrdFornButton.setBounds(144, 185, 152, 39);
 		
 		//Termina applicazione
 		JButton btnNewButton = new JButton("Chiudi App");
@@ -93,7 +90,6 @@ public class MainFrame extends JFrame {
 		contentPane.setLayout(null);
 		contentPane.add(lblGestionaleBar);
 		contentPane.add(menuArtButton);
-		contentPane.add(menuFornitButton);
 		contentPane.add(menuEntrSpesButton);
 		contentPane.add(menuOrdFornButton);
 		contentPane.add(btnNewButton);

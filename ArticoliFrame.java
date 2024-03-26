@@ -88,7 +88,6 @@ public class ArticoliFrame extends JFrame {
 			}
 		});
 		
-	
 		keywordField.setBounds(10, 11, 159, 28);
 		contentPane.add(keywordField);
 		

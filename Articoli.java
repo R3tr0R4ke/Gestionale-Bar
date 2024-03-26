@@ -1,6 +1,5 @@
 import java.awt.GridLayout;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,16 +11,13 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class Articoli extends Articolo{
-	private String url = "jdbc:mysql://localhost:3306/gestionalebar";
-	private String username = "root";
-	private String password = "SESSOPAZZO39!";
-	
 	public Articoli() {}
 		
 	public void aggiungiArticoloAlDatabase(Articolo nuovoArticolo) {
+		//Aggiungere controlli su inserimenti errati
 		String query = "INSERT INTO articoli (nome, giacenza, prezzoAcquisto, prezzoVendita, categoria) VALUES (?, ?, ?, ? ,?)";
 		
-		try (Connection conn = DriverManager.getConnection(url, username, password);
+		try (Connection conn = DBConnector.getConnection();
 	             PreparedStatement pstmt = conn.prepareStatement(query)){
 			pstmt.setString(1, nuovoArticolo.getNome());
             pstmt.setInt(2, nuovoArticolo.getGiacenza());
@@ -43,7 +39,7 @@ public class Articoli extends Articolo{
 		
 		String query = "SELECT * FROM articoli";
         
-		try(Connection conn = DriverManager.getConnection(url, username, password);
+		try(Connection conn = DBConnector.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(query)){
 				ResultSet rs = pstmt.executeQuery(query);	//Esecuzione della query
 				
@@ -88,7 +84,7 @@ public class Articoli extends Articolo{
                 //Rimozione dalla tabella di MySQL
             	try {
                     // Connessione al database
-                    conn = DriverManager.getConnection(url, username, password);
+                    conn = DBConnector.getConnection();
 
                     if (!idArticoloString.isEmpty()) {
                         // Rimozione dall'ID se è stato inserito
@@ -138,7 +134,7 @@ public class Articoli extends Articolo{
 		String queryByID = "SELECT * FROM Articoli WHERE ID_Articolo = ?";
 		String queryByName = "SELECT * FROM Articoli WHERE Nome LIKE ?";
 		
-		try (Connection conn = DriverManager.getConnection(url, username, password);
+		try (Connection conn = DBConnector.getConnection();
 	             PreparedStatement pstmt = conn.prepareStatement(keyword.matches("\\d+") ? queryByID : queryByName)){
 			
 			if(keyword.matches("\\d+")) {
@@ -177,9 +173,10 @@ public class Articoli extends Articolo{
 	}
 	
 	public void updateArticolo(int id, Articolo articolo) {
+		//TODO: aggiungere controlli su inserimenti errati
 		String query = "UPDATE Articoli SET Nome = ?, Giacenza = ?, PrezzoAcquisto = ?, PrezzoVendita = ?, Categoria = ? WHERE ID_Articolo = ?";
 		
-		try(Connection conn = DriverManager.getConnection(url, username, password);
+		try(Connection conn = DBConnector.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(query)){
 					
 			// Imposta i parametri per l'aggiornamento
@@ -196,8 +193,4 @@ public class Articoli extends Articolo{
             System.err.println("Errore durante l'aggiornamento dell'articolo: " + e.getMessage());
         }
 	}
-	
-	/*public void getArtDescription() {
-		int idArticolo = Integer.parseInt(id)
-	}*/
 }

@@ -8,19 +8,6 @@ public class Articolo {
 	
 	public Articolo() {}	//Costruttore vuoto
 	
-	//Costruttore che accetta solo id, nome, giacenza, categoria
-	public Articolo(int idArticolo, String nome, int giacenza, Categoria categoria) {
-		if(nome == null || nome.isEmpty()) {
-			throw new IllegalArgumentException("Nome articolo non presente");
-		}
-		if(giacenza < 0) {
-			throw new IllegalArgumentException("Giacenza non può essere < 0");
-		}
-		this.nome = nome;
-		this.giacenza = giacenza;
-		this.categoria = categoria;
-	}
-	
 	//Costruttore con tutti i parametri
 	public  Articolo(String nome, int giacenza, BigDecimal prezzoAcquisto, BigDecimal prezzoUnitario, Categoria categoria) {
 		if(nome == null || nome.isEmpty()) {
